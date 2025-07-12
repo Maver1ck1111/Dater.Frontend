@@ -1,0 +1,14 @@
+.navBar{
+    width: 100vw;
+    height: 8vh;
+    padding: 1rem 3rem;
+    background: linear-gradient(45deg, #eb3e72 40%, #f78a41);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.options{
+    display: flex;
+    gap: 2.5rem;
+}
