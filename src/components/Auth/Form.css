@@ -1,13 +1,12 @@
 form{
     width: 40vw;
-    height: 70vh;
     margin: 10vh 30vw;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 30px;
     background: linear-gradient(45deg, #eb3e72 35%, #f78a41);
-    gap: 10vh;
+    gap: 5rem;
     border-radius: 5%;
     border: 3px solid #eab0b0;
     box-shadow: 0 0 0 3px rgba(255, 180, 200, 0.4);
@@ -70,4 +69,18 @@ button:hover {
 
 button:active {
   transform: scale(0.97);
+}
+
+form a {
+    color: #fff;
+    text-decoration: underline;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    transition: color 0.3s ease;
+    text-decoration: none;
+}
+
+form a:hover {
+    color: #ffd1d9;
+    cursor: pointer;
 }

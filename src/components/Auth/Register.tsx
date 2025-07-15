@@ -8,7 +8,7 @@ export default function Register() {
     const navigate = useNavigate();
 
     const onSubmit = (data : FormDataValidation) => {
-        axios.post("https://localhost:7278/api/auth/register", {
+        axios.post("api/auth/register", {
             email: data.email,
             password: data.password
         })
@@ -25,6 +25,6 @@ export default function Register() {
     }
 
     return (
-        <Form onSubmitFunction={onSubmit} enterText="Welcome to Dater" buttonText="Register"/>
+        <Form onSubmitFunction={onSubmit} enterText="Welcome to Dater" buttonText="Register" link/>
     )
 }

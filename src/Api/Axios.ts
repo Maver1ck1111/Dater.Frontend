@@ -69,11 +69,11 @@ api.interceptors.response.use(
             Authorization: `Bearer ${newAccessToken}`,
             };
 
-            return api(originalRequest);
+            return await api(originalRequest);
         } catch (refreshError) {
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
-            window.location.href = '/login';
+            window.location.href = '/register';
             return Promise.reject(refreshError);
         }
     }

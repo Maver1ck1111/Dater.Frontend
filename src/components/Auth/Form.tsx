@@ -1,12 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { schema, type FormDataValidation } from "../../Validators/FormDataValidation";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 
 interface FormProps {
   onSubmitFunction: (data: FormDataValidation) => void;
   enterText: string;
   buttonText: string;
-  link?: string;
+  link?: boolean;
 }
 
 export default function Form({onSubmitFunction, enterText, buttonText, link} : FormProps) {
@@ -32,7 +33,11 @@ export default function Form({onSubmitFunction, enterText, buttonText, link} : F
                 { errors.password && <p className="error-message">{errors.password.message}</p>}
             </div>
 
-            {link && <a>Already have an account</a>}
+            {link && (
+                <Link to="/login">
+                    Already have an account?
+                </Link>
+            )}
 
             <button>{buttonText}</button>
         </form>

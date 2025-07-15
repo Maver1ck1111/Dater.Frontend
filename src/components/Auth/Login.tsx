@@ -8,7 +8,7 @@ export default function Login() {
     const navigate = useNavigate();
 
     const onSubmit = (data : FormDataValidation) => {
-        axios.post("https://localhost:7278/api/auth/login", {
+        axios.post("api/auth/login", {
             email: data.email,
             password: data.password
         })
