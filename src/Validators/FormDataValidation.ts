@@ -1,6 +1,6 @@
 import { z }  from "zod";
 
-export const loginSchema = z.object({
+export const schema = z.object({
   email: z.string().email("Inccorect email"),
   password: z
     .string()
@@ -13,4 +13,4 @@ export const loginSchema = z.object({
     )
 });
 
-export type FormDataValidation = z.infer<typeof loginSchema>;
+export type FormDataValidation = z.infer<typeof schema>;

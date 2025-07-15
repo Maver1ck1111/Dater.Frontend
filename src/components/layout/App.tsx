@@ -2,7 +2,7 @@ import { Navigate } from 'react-router-dom';
 import NavBar from './NavBar'
 
 function App() {
-  const token = 10;
+  const token = localStorage.getItem("AccessToken");
 
   return (
     token ? (
