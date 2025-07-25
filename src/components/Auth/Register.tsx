@@ -2,7 +2,7 @@ import "./Form.css"
 import { type FormDataValidation } from "../../Validators/FormDataValidation";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Form from "./Form";
+import AuthForm from "./AuthForm";
 
 export default function Register() {
     const navigate = useNavigate();
@@ -25,6 +25,6 @@ export default function Register() {
     }
 
     return (
-        <Form onSubmitFunction={onSubmit} enterText="Welcome to Dater" buttonText="Register" link/>
+        <AuthForm onSubmitFunction={onSubmit} enterText="Welcome to Dater" buttonText="Register" link/>
     )
 }

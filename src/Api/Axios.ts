@@ -5,18 +5,18 @@ const api = axios.create({
     baseURL: "https://localhost:7278/"
 })
 
-api.interceptors.request.use(
-    config => {
+// api.interceptors.request.use(
+//     config => {
 
-    const accessToken = localStorage.getItem('AccessToken');
+//     const accessToken = localStorage.getItem('AccessToken');
 
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
-  },
-  error => Promise.reject(error)
-);
+//     if (accessToken) {
+//       config.headers.Authorization = `Bearer ${accessToken}`;
+//     }
+//     return config;
+//   },
+//   error => Promise.reject(error)
+// );
 
 function getEmailFromAccessToken(): string | null{
     const token = localStorage.getItem("AccessToken");
@@ -65,8 +65,8 @@ api.interceptors.response.use(
             const newAccessToken = await refreshToken();
 
             originalRequest.headers = {
-            ...originalRequest.headers,
-            Authorization: `Bearer ${newAccessToken}`,
+                ...originalRequest.headers,
+                Authorization: `Bearer ${newAccessToken}`,
             };
 
             return await api(originalRequest);

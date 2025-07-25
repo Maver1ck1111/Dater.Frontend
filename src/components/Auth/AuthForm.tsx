@@ -10,7 +10,7 @@ interface FormProps {
   link?: boolean;
 }
 
-export default function Form({onSubmitFunction, enterText, buttonText, link} : FormProps) {
+export default function AuthForm({onSubmitFunction, enterText, buttonText, link} : FormProps) {
 
     const {register, formState: { errors }, handleSubmit} = useForm({
         resolver: zodResolver(schema),
