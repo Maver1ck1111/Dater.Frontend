@@ -1,0 +1,41 @@
+.image-uploader {
+  margin-top: 10px;
+}
+
+.image-uploader-label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.image-previews {
+  margin-top: 10px;
+}
+
+.image-preview-wrapper {
+  display: inline-block;
+  position: relative;
+  margin-right: 10px;
+}
+
+.image-preview {
+  max-width: 150px;
+  border-radius: 8px;
+  display: block;
+}
+
+.image-remove-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 18px;
+  padding: 0;
+}

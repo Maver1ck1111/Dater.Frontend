@@ -9,14 +9,19 @@ import { MovieInterest } from "../Enums/MovieInterest";
 import { LyfestyleInterest } from "../Enums/LyfestyleInterest";
 import { BookInterest } from "../Enums/BookInterest";
 
-export const profileSchema = z.object({ 
-    name: z.string().max(30, "Name must be no longer than 30 characters").min(5, "Name must be at least 5 characters long"),
-    description: z.string().max(300, "Description must be no longer than 300 characters").min(20,"Description must be at least 20 characters long"),
-    dateOfBirth:   
-        z.string()
-        .refine(val => !isNaN(Date.parse(val)), {
-            message: "Invalid date format",
-        }),
+export const profileSchema = z
+  .object({
+    name: z
+      .string()
+      .max(30, "Name must be no longer than 30 characters")
+      .min(5, "Name must be at least 5 characters long"),
+    description: z
+      .string()
+      .max(300, "Description must be no longer than 300 characters")
+      .min(20, "Description must be at least 20 characters long"),
+    dateOfBirth: z.string().refine((val) => !isNaN(Date.parse(val)), {
+      message: "Invalid date format",
+    }),
     bookInterest: z.nativeEnum(BookInterest),
     foodInterest: z.nativeEnum(FoodInterest),
     hobbyInterest: z.nativeEnum(HobbyInterest),
@@ -25,8 +30,12 @@ export const profileSchema = z.object({
     movieInterest: z.nativeEnum(MovieInterest),
     musicInterest: z.nativeEnum(MusicInterest),
     sportInterest: z.nativeEnum(SportInterest),
-    travelInterest: z.nativeEnum(TravelInterest)
-}).superRefine((data, ctx) => {
+    travelInterest: z.nativeEnum(TravelInterest),
+    photos: z
+      .array(z.instanceof(File))
+      .nonempty({ message: "Upload at least 1 photo" }),
+  })
+  .superRefine((data, ctx) => {
     const filledCount = [
       data.bookInterest !== BookInterest.None,
       data.foodInterest !== FoodInterest.None,
@@ -39,7 +48,7 @@ export const profileSchema = z.object({
     ].filter(Boolean).length;
 
     console.log("filledCount:", filledCount);
-    
+
     if (filledCount < 3) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -47,6 +56,6 @@ export const profileSchema = z.object({
         path: ["_form"],
       });
     }
-});
+  });
 
 export type ProfileDataValidation = z.infer<typeof profileSchema>;
