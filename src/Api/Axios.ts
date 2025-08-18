@@ -22,9 +22,13 @@ function getEmailFromAccessToken(): string | null {
 
   if (!token) return null;
 
-  const decode = jwtDecode<{ email?: string }>(token);
+  const decode: any = jwtDecode(token);
 
-  return decode.email || null;
+  return (
+    decode[
+      "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
+    ] || null
+  );
 }
 
 async function refreshToken() {
@@ -32,19 +36,19 @@ async function refreshToken() {
 
   if (!email) throw new Error("No email found");
 
-  const refreshToken = localStorage.getItem("RefreshToken");
+  const currentRefreshToken = localStorage.getItem("RefreshToken");
 
-  if (!refreshToken) throw new Error("No refresh token found");
+  if (!currentRefreshToken) throw new Error("No refresh token found");
 
-  const response = await api.post("/api/auth/refresh", {
+  const response = await api.post("/refresh", {
     email: email,
-    refreshToken: refreshToken,
+    refreshToken: currentRefreshToken,
   });
 
-  const { newAccessToken, newRefreshToken } = response.data;
+  const { accessToken, refreshToken } = response.data;
 
-  localStorage.setItem("accessToken", newAccessToken);
-  localStorage.setItem("refreshToken", newRefreshToken);
+  localStorage.setItem("AccessToken", accessToken);
+  localStorage.setItem("RefreshToken", refreshToken);
 
   return refreshToken;
 }
@@ -55,6 +59,10 @@ api.interceptors.response.use(
     const originalRequest = error.config as AxiosRequestConfig & {
       _retry?: boolean;
     };
+
+    if (originalRequest.url === "/refresh") {
+      return Promise.reject(error);
+    }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -69,9 +77,9 @@ api.interceptors.response.use(
 
         return await api(originalRequest);
       } catch (refreshError) {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-        window.location.href = "/register";
+        //localStorage.removeItem("AccessToken");
+        //localStorage.removeItem("RefreshToken");
+        //window.location.href = "/register";
         return Promise.reject(refreshError);
       }
     }

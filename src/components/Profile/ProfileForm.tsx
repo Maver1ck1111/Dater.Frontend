@@ -12,9 +12,12 @@ import { TravelInterest } from "../../Enums/TravelInterest";
 import { LyfestyleInterest } from "../../Enums/LyfestyleInterest";
 import type z from "zod";
 import "./ProfileForm.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PhotosInput } from "./PhotosInput";
 import type { SubmitHandler } from "react-hook-form";
+import { jwtDecode } from "jwt-decode";
+import api from "../../Api/Axios";
+import { useNavigate } from "react-router-dom";
 
 type FormValues = z.infer<typeof profileSchema> & {
   _form?: string;
@@ -22,7 +25,7 @@ type FormValues = z.infer<typeof profileSchema> & {
 
 export default function ProfileForm() {
   const [images, setImages] = useState<File[]>([]);
-
+  const navigate = useNavigate();
   const {
     formState: { errors },
     register,
@@ -43,6 +46,28 @@ export default function ProfileForm() {
       photos: [],
     },
   });
+
+  useEffect(() => {
+    async function getUser() {
+      const accessToken = localStorage.getItem("AccessToken");
+
+      if (!accessToken) {
+        navigate("/register");
+        return;
+      }
+
+      const decode = jwtDecode(accessToken);
+      console.log(decode);
+
+      const user = await api.get(`/profile/${decode.sub}`);
+
+      if (!user) return;
+
+      console.log(user);
+    }
+
+    getUser();
+  }, []);
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     console.log(data);

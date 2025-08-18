@@ -7,20 +7,14 @@ import api from "../../Api/Axios";
 export default function Login() {
   const navigate = useNavigate();
 
-  const onSubmit = (data: FormDataValidation) => {
-    api
-      .post("api/auth/login", {
-        email: data.email,
-        password: data.password,
-      })
-      .then((response) => {
-        localStorage.setItem("AccessToken", response.data.accessToken);
-        localStorage.setItem("RefreshToken", response.data.refreshToken);
-      })
-      .catch((error) => {
-        console.log(error);
-        return;
-      });
+  const onSubmit = async (data: FormDataValidation) => {
+    const response = await api.post("/login", {
+      email: data.email,
+      password: data.password,
+    });
+
+    localStorage.setItem("AccessToken", response.data.accessToken);
+    localStorage.setItem("RefreshToken", response.data.refreshToken);
 
     navigate("/");
   };

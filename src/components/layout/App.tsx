@@ -1,19 +1,14 @@
-import { Navigate } from 'react-router-dom';
-import NavBar from './NavBar'
+import NavBar from "./NavBar";
 
 function App() {
-  const token = localStorage.getItem("AccessToken");
-
   return (
-    token ? (
-      <>
-        <NavBar />
-        <h3>{localStorage.getItem("AccessToken")}</h3>
-        <br />
-        <h3>{localStorage.getItem("RefreshToken")}</h3>
-      </>
-    ) : <Navigate to="/login"/>
-  )
+    <>
+      <NavBar />
+      <h3>{localStorage.getItem("AccessToken")}</h3>
+      <br />
+      <h3>{localStorage.getItem("RefreshToken")}</h3>
+    </>
+  );
 }
 
-export default App
+export default App;
