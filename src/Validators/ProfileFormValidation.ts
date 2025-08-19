@@ -47,8 +47,6 @@ export const profileSchema = z
       data.travelInterest !== TravelInterest.None,
     ].filter(Boolean).length;
 
-    console.log("filledCount:", filledCount);
-
     if (filledCount < 3) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
