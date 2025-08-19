@@ -12,7 +12,7 @@ import { TravelInterest } from "../../Enums/TravelInterest";
 import { LyfestyleInterest } from "../../Enums/LyfestyleInterest";
 import type z from "zod";
 import "./ProfileForm.css";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { PhotosInput } from "./PhotosInput";
 import type { SubmitHandler } from "react-hook-form";
 import { jwtDecode } from "jwt-decode";
@@ -25,11 +25,14 @@ type FormValues = z.infer<typeof profileSchema> & {
 
 export default function ProfileForm() {
   const navigate = useNavigate();
+  const currentUser = useRef(false);
+
   const {
     formState: { errors },
     register,
     handleSubmit,
     control,
+    reset,
   } = useForm<FormValues>({
     resolver: zodResolver(profileSchema),
     mode: "onBlur",
@@ -60,9 +63,19 @@ export default function ProfileForm() {
 
       const user = await api.get(`/profile/${decode.sub}`);
 
-      if (!user) return;
+      if (user.statusText !== "OK") return;
 
-      console.log(user);
+      currentUser.current = true;
+
+      const uploadedUser = user.data;
+
+      for (const [key, field] of Object.entries(uploadedUser)) {
+        if (!field) {
+          uploadedUser[key] = "None";
+        }
+      }
+
+      reset(uploadedUser);
     }
 
     getUser();
@@ -79,18 +92,19 @@ export default function ProfileForm() {
     const decode = jwtDecode(accessToken);
     const { photos, ...userData } = data;
 
-    console.log(decode.sub);
-
     for (const [key, value] of Object.entries(userData)) {
       if (value === "None") {
         delete userData[key as keyof typeof userData];
       }
     }
-    const newUser = { ...userData, accountID: decode.sub };
 
-    console.log(newUser);
-    await api.post("/profile", { ...userData, accountID: decode.sub });
     console.log(photos);
+
+    if (!currentUser.current) {
+      await api.post("/profile", { ...userData, accountID: decode.sub });
+    } else {
+      await api.put("/profile", { ...userData, accountID: decode.sub });
+    }
   };
 
   return (
@@ -101,7 +115,7 @@ export default function ProfileForm() {
         render={({ field, fieldState }) => (
           <PhotosInput
             error={fieldState.error?.message}
-            onFilesChange={(files) => field.onChange(files)} // теперь photos хранится в RHF
+            onFilesChange={(files) => field.onChange(files)}
           />
         )}
       />
