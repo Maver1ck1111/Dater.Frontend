@@ -25,7 +25,7 @@ type FormValues = z.infer<typeof profileSchema> & {
 
 export default function ProfileForm() {
   const navigate = useNavigate();
-  const currentUser = useRef(false);
+  const currentUser = useRef<any>(null);
 
   const {
     formState: { errors },
@@ -62,20 +62,37 @@ export default function ProfileForm() {
       const decode = jwtDecode(accessToken);
 
       const user = await api.get(`/profile/${decode.sub}`);
-
       if (user.statusText !== "OK") return;
 
-      currentUser.current = true;
-
       const uploadedUser = user.data;
+      const photos: File[] = [];
 
-      for (const [key, field] of Object.entries(uploadedUser)) {
-        if (!field) {
-          uploadedUser[key] = "None";
+      for (let i = 0; i < uploadedUser.imagePaths.length; i++) {
+        const filePath = uploadedUser.imagePaths[i];
+        if (!filePath) continue;
+
+        try {
+          const response = await api.get(
+            `/profile/getPhotoByID/${decode.sub}/${i}`,
+            { responseType: "blob" }
+          );
+
+          const file = new File([response.data], uploadedUser.imagePaths[i], {
+            type: response.data.type,
+          });
+          photos.push(file);
+        } catch {
+          continue;
         }
       }
 
-      reset(uploadedUser);
+      for (const [key, field] of Object.entries(uploadedUser)) {
+        if (!field) uploadedUser[key] = "None";
+      }
+
+      currentUser.current = { ...uploadedUser, photos };
+
+      reset({ ...uploadedUser, photos });
     }
 
     getUser();
@@ -98,13 +115,23 @@ export default function ProfileForm() {
       }
     }
 
-    console.log(photos);
-
     if (!currentUser.current) {
       await api.post("/profile", { ...userData, accountID: decode.sub });
     } else {
       await api.put("/profile", { ...userData, accountID: decode.sub });
     }
+
+    const formData = new FormData();
+
+    photos.forEach((file) => {
+      formData.append("photos", file);
+    });
+
+    await api.post(`/set-photo/${decode.sub}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
   };
 
   return (
@@ -116,6 +143,7 @@ export default function ProfileForm() {
           <PhotosInput
             error={fieldState.error?.message}
             onFilesChange={(files) => field.onChange(files)}
+            existingFiles={currentUser.current?.photos}
           />
         )}
       />

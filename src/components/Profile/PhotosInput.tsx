@@ -1,14 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./PhotosInput.css";
 
 type ImageUploaderProps = {
   error?: string;
   onFilesChange?: (files: File[]) => void;
+  existingFiles?: File[];
 };
 
-export function PhotosInput({ error, onFilesChange }: ImageUploaderProps) {
+export function PhotosInput({
+  error,
+  onFilesChange,
+  existingFiles,
+}: ImageUploaderProps) {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (existingFiles) {
+      const validFiles = existingFiles.filter((f): f is File => f != null);
+
+      const urlPhotos = validFiles.map((file) => URL.createObjectURL(file));
+
+      setPreviews(urlPhotos);
+      setSelectedFiles(validFiles);
+    }
+  }, [existingFiles]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -20,8 +36,7 @@ export function PhotosInput({ error, onFilesChange }: ImageUploaderProps) {
       alert("You can choose up to 3 photos only");
       return;
     }
-
-    const newFiles = [...selectedFiles, ...filesArray];
+    const newFiles = [...filesArray, ...selectedFiles];
     setSelectedFiles(newFiles);
     onFilesChange?.(newFiles);
 
@@ -78,7 +93,7 @@ export function PhotosInput({ error, onFilesChange }: ImageUploaderProps) {
               type="button"
               className="image-remove-btn"
               onClick={() => removeImage(idx)}
-              aria-label={`Удалить фото ${idx + 1}`}
+              aria-label={`Delete photo ${idx + 1}`}
             >
               ×
             </button>
