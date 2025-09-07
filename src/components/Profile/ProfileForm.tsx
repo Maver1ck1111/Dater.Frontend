@@ -18,6 +18,7 @@ import type { SubmitHandler } from "react-hook-form";
 import { jwtDecode } from "jwt-decode";
 import api from "../../Api/Axios";
 import { useNavigate } from "react-router-dom";
+import type { Profile } from "../../types/Profile";
 
 type FormValues = z.infer<typeof profileSchema> & {
   _form?: string;
@@ -25,7 +26,20 @@ type FormValues = z.infer<typeof profileSchema> & {
 
 export default function ProfileForm() {
   const navigate = useNavigate();
-  const currentUser = useRef<any>(null);
+  const currentUser = useRef<Profile>(null);
+
+  const defaultValues = {
+    gender: Gender.Male,
+    bookInterest: BookInterest.None,
+    foodInterest: FoodInterest.None,
+    hobbyInterest: HobbyInterest.None,
+    lyfestyleInterest: LyfestyleInterest.None,
+    movieInterest: MovieInterest.None,
+    musicInterest: MusicInterest.None,
+    sportInterest: SportInterest.None,
+    travelInterest: TravelInterest.None,
+    photos: [],
+  };
 
   const {
     formState: { errors },
@@ -36,18 +50,7 @@ export default function ProfileForm() {
   } = useForm<FormValues>({
     resolver: zodResolver(profileSchema),
     mode: "onBlur",
-    defaultValues: {
-      gender: Gender.Male,
-      bookInterest: BookInterest.None,
-      foodInterest: FoodInterest.None,
-      hobbyInterest: HobbyInterest.None,
-      lyfestyleInterest: LyfestyleInterest.None,
-      movieInterest: MovieInterest.None,
-      musicInterest: MusicInterest.None,
-      sportInterest: SportInterest.None,
-      travelInterest: TravelInterest.None,
-      photos: [],
-    },
+    defaultValues: defaultValues,
   });
 
   useEffect(() => {
@@ -64,7 +67,7 @@ export default function ProfileForm() {
       const user = await api.get(`/profile/${decode.sub}`);
       if (user.statusText !== "OK") return;
 
-      const uploadedUser = user.data;
+      const uploadedUser = user.data as Profile;
       const photos: File[] = [];
 
       for (let i = 0; i < uploadedUser.imagePaths.length; i++) {
@@ -80,19 +83,36 @@ export default function ProfileForm() {
           const file = new File([response.data], uploadedUser.imagePaths[i], {
             type: response.data.type,
           });
+
           photos.push(file);
         } catch {
           continue;
         }
       }
 
-      for (const [key, field] of Object.entries(uploadedUser)) {
-        if (!field) uploadedUser[key] = "None";
-      }
+      const filledUser: Profile = {
+        ...uploadedUser,
+        bookInterest: uploadedUser.bookInterest || BookInterest.None,
+        sportInterest: uploadedUser.sportInterest || SportInterest.None,
+        movieInterest: uploadedUser.movieInterest || MovieInterest.None,
+        musicInterest: uploadedUser.musicInterest || MusicInterest.None,
+        foodInterest: uploadedUser.foodInterest || FoodInterest.None,
+        lyfestyleInterest:
+          uploadedUser.lyfestyleInterest || LyfestyleInterest.None,
+        travelInterest: uploadedUser.travelInterest || TravelInterest.None,
+      };
 
-      currentUser.current = { ...uploadedUser, photos };
+      currentUser.current = { ...filledUser, photos };
 
-      reset({ ...uploadedUser, photos });
+      const formattedDate = new Date(filledUser.dateOfBirth)
+        .toISOString()
+        .slice(0, 10);
+
+      reset({
+        ...filledUser,
+        photos,
+        dateOfBirth: formattedDate,
+      });
     }
 
     getUser();
