@@ -1,0 +1,117 @@
+.profile-card {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile-photos {
+  display: grid;
+  gap: 6px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.profile-photos img {
+  width: 100%;
+  height: auto; /* высота под пропорцию картинки */
+  object-fit: contain; /* сохраняем пропорции, показываем всю картинку */
+}
+
+.profile-photos.count-1 {
+  grid-template-columns: 1fr;
+}
+
+.profile-photos.count-2 {
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: auto; /* высота под контент */
+}
+
+.profile-photos.count-3 {
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+}
+
+.profile-photos.count-3 img:nth-child(1) {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.profile-photos.count-3 img:nth-child(2) {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.profile-photos.count-3 img:nth-child(3) {
+  grid-column: 1 / span 2; /* растягиваем на всю ширину */
+  grid-row: 2;
+}
+
+.profile-details h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #222;
+}
+
+.profile-details p {
+  margin: 6px 0;
+  color: #444;
+  line-height: 1.5;
+}
+
+.profile-interests {
+  margin-top: 10px;
+}
+
+.profile-interests h3 {
+  margin-bottom: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.profile-interests ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.profile-interests li {
+  background: #f3f3f3;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #444;
+}
+
+@media (max-width: 700px) {
+  .profile-card {
+    padding: 16px;
+  }
+
+  .profile-photos.count-2 {
+    grid-auto-rows: 200px;
+  }
+
+  .profile-photos.count-3 {
+    grid-template-rows: 200px 140px;
+  }
+
+  .profile-details h2 {
+    text-align: center;
+  }
+
+  .profile-interests ul {
+    justify-content: center;
+  }
+}

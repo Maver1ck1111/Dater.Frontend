@@ -1,24 +1,24 @@
 import { useForm, Controller } from "react-hook-form";
-import { profileSchema } from "../../Validators/ProfileFormValidation";
+import { profileSchema } from "../../../Validators/ProfileFormValidation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Gender } from "../../Enums/Gender";
-import { HobbyInterest } from "../../Enums/HobbyInterest";
-import { BookInterest } from "../../Enums/BookInterest";
-import { FoodInterest } from "../../Enums/FoodInterest";
-import { MovieInterest } from "../../Enums/MovieInterest";
-import { MusicInterest } from "../../Enums/MusicInterest";
-import { SportInterest } from "../../Enums/SportInterest";
-import { TravelInterest } from "../../Enums/TravelInterest";
-import { LyfestyleInterest } from "../../Enums/LyfestyleInterest";
+import { Gender } from "../../../Enums/Gender";
+import { HobbyInterest } from "../../../Enums/HobbyInterest";
+import { BookInterest } from "../../../Enums/BookInterest";
+import { FoodInterest } from "../../../Enums/FoodInterest";
+import { MovieInterest } from "../../../Enums/MovieInterest";
+import { MusicInterest } from "../../../Enums/MusicInterest";
+import { SportInterest } from "../../../Enums/SportInterest";
+import { TravelInterest } from "../../../Enums/TravelInterest";
+import { LyfestyleInterest } from "../../../Enums/LyfestyleInterest";
 import type z from "zod";
 import "./ProfileForm.css";
 import { useEffect, useRef } from "react";
 import { PhotosInput } from "./PhotosInput";
 import type { SubmitHandler } from "react-hook-form";
 import { jwtDecode } from "jwt-decode";
-import api from "../../Api/Axios";
+import api from "../../../Api/Axios";
 import { useNavigate } from "react-router-dom";
-import type { Profile } from "../../types/Profile";
+import type { Profile } from "../../../types/Profile";
 
 type FormValues = z.infer<typeof profileSchema> & {
   _form?: string;
